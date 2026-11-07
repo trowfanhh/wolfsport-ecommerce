@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản lý sản phẩm')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: adminNav('products')}"></nav>
+
+<main class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h3 class="fw-bold mb-0"><i class="bi bi-box-seam"></i> Quản lý sản phẩm</h3>
+        <a th:href="@{/admin/products/new}" class="btn btn-accent"><i class="bi bi-plus-lg"></i> Thêm sản phẩm</a>
+    </div>
+
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <form class="row g-2 mb-3" th:action="@{/admin/products}" method="get">
+        <div class="col-md-6">
+            <input type="search" name="keyword" class="form-control" placeholder="Tìm theo tên sản phẩm..." th:value="${keyword}">
+        </div>
+        <div class="col-auto"><button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Tìm</button></div>
+        <div class="col-auto" th:if="${!#strings.isEmpty(keyword)}"><a class="btn btn-link" th:href="@{/admin/products}">Xóa lọc</a></div>
+    </form>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th class="text-end">Giá</th>
+                    <th class="text-center">Tồn kho</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${products.isEmpty()}"><td colspan="8" class="text-center text-secondary py-4">Không có sản phẩm nào.</td></tr>
+                <tr th:each="p : ${products}">
+                    <td th:text="${p.productId}">1</td>
+                    <td>
+                        <img class="thumb-sm" th:src="${p.imageSrc}"
+                             alt="" onerror="this.onerror=null;this.src='/images/no-image.svg'">
+                    </td>
+                    <td class="fw-semibold title-case" th:text="${p.productName}">Tên</td>
+                    <td class="text-uppercase" th:text="${p.category.categoryName}">Danh mục</td>
+                    <td class="text-end"><span th:replace="~{fragments/layout :: price(${p.price})}"></span></td>
+                    <td class="text-center">
+                        <span th:classappend="${p.stockQuantity == 0} ? 'text-danger fw-bold'" th:text="${p.stockQuantity}">0</span>
+                    </td>
+                    <td>
+                        <span class="badge" th:classappend="${p.status == 'ACTIVE'} ? 'text-bg-success' : 'text-bg-secondary'"
+                              th:text="${p.status == 'ACTIVE'} ? 'Đang bán' : 'Ngừng bán'">ACTIVE</span>
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/products/{id}/edit(id=${p.productId})}"><i class="bi bi-pencil"></i></a>
+                        <form class="d-inline" th:action="@{/admin/products/{id}/delete(id=${p.productId})}" method="post"
+                              onsubmit="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <nav th:if="${page.totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/products(page=${page.number - 1}, keyword=${keyword})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}" th:classappend="${i == page.number} ? 'active'">
+                <a class="page-link" th:href="@{/admin/products(page=${i}, keyword=${keyword})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/products(page=${page.number + 1}, keyword=${keyword})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

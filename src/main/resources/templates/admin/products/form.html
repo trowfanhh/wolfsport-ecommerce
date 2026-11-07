@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Quản trị sản phẩm')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: adminNav('products')}"></nav>
+
+<main class="container py-4" style="max-width: 820px;">
+    <h3 class="fw-bold mb-3" th:text="${productId == null} ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'">Sản phẩm</h3>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form th:action="${productId == null} ? @{/admin/products} : @{/admin/products/{id}(id=${productId})}"
+                  th:object="${product}" method="post" novalidate>
+
+                <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="productName">Tên sản phẩm <span class="text-danger">*</span></label>
+                    <input type="text" id="productName" class="form-control" th:field="*{productName}"
+                           th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{productName}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="categoryId">Danh mục <span class="text-danger">*</span></label>
+                        <select id="categoryId" name="categoryId" class="form-select" required>
+                            <option value="">-- Chọn danh mục --</option>
+                            <option class="text-uppercase" th:each="c : ${categories}" th:value="${c.categoryId}"
+                                    th:text="${c.categoryName} + (${c.status == 'ACTIVE'} ? '' : ' (ngừng)')"
+                                    th:selected="${selectedCategoryId != null and selectedCategoryId == c.categoryId}">Danh mục</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="status">Trạng thái</label>
+                        <select id="status" class="form-select" th:field="*{status}">
+                            <option value="ACTIVE">Đang bán (ACTIVE)</option>
+                            <option value="INACTIVE">Ngừng bán (INACTIVE)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="price">Giá (₫) <span class="text-danger">*</span></label>
+                        <input type="number" id="price" class="form-control" th:field="*{price}" min="0" step="1000"
+                               th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{price}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="stockQuantity">Số lượng tồn kho <span class="text-danger">*</span></label>
+                        <input type="number" id="stockQuantity" class="form-control" th:field="*{stockQuantity}" min="0"
+                               th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:errors="*{stockQuantity}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="imageUrl">Link ảnh sản phẩm</label>
+                    <input type="text" id="imageUrl" class="form-control" th:field="*{imageUrl}"
+                           placeholder="https://... (để trống sẽ dùng ảnh mặc định)" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{imageUrl}"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="description">Mô tả</label>
+                    <textarea id="description" class="form-control" rows="5" th:field="*{description}"></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent"><i class="bi bi-check-lg"></i> Lưu</button>
+                    <a th:href="@{/admin/products}" class="btn btn-outline-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,142 @@
+:root {
+  --ws-dark: #1c1f26;
+  --ws-accent: #ff6a1a;
+  --ws-accent-dark: #e35a0f;
+}
+body {
+  background: #f6f7f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+.navbar-wolf {
+  background: var(--ws-dark);
+}
+.navbar-wolf .navbar-brand span {
+  color: var(--ws-accent);
+}
+.btn-accent {
+  background: var(--ws-accent);
+  border-color: var(--ws-accent);
+  color: #fff;
+}
+.btn-accent:hover,
+.btn-accent:focus {
+  background: var(--ws-accent-dark);
+  border-color: var(--ws-accent-dark);
+  color: #fff;
+}
+.btn-outline-accent {
+  border-color: var(--ws-accent);
+  color: var(--ws-accent);
+}
+.btn-outline-accent:hover {
+  background: var(--ws-accent);
+  color: #fff;
+}
+.text-accent {
+  color: var(--ws-accent) !important;
+}
+.hero {
+  background: linear-gradient(120deg, var(--ws-dark) 55%, #343a47);
+  color: #fff;
+  border-radius: 1rem;
+}
+.product-card {
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+}
+.product-img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  width: 100%;
+  background: #eef0f3;
+}
+.product-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.8em;
+}
+.price {
+  color: var(--ws-accent-dark);
+  font-weight: 700;
+}
+.category-tile {
+  border: 0;
+  border-left: 4px solid var(--ws-accent);
+}
+.thumb-sm {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  background: #eef0f3;
+}
+.page-link {
+  color: var(--ws-accent-dark);
+}
+.page-item.active .page-link {
+  background: var(--ws-accent);
+  border-color: var(--ws-accent);
+  color: #fff;
+}
+.cart-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  background: #eef0f3;
+}
+
+/* Tên sản phẩm luôn hiển thị viết hoa chữ cái đầu mỗi từ (không đổi dữ liệu trong DB) */
+.title-case,
+.product-name {
+  text-transform: capitalize;
+}
+
+/* Thanh điều hướng danh mục dưới header */
+.category-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 0.4rem;
+  padding-top: 0.2rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.category-bar .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-bottom: 2px solid transparent;
+}
+.category-bar .nav-link:hover {
+  color: #fff;
+}
+.category-bar .nav-link.active {
+  color: var(--ws-accent);
+  border-bottom-color: var(--ws-accent);
+}
+/* Đường dẫn (breadcrumb) đồng bộ màu và kiểu chữ */
+.breadcrumb-wolf {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.breadcrumb-wolf .breadcrumb-item a,
+.breadcrumb-wolf .breadcrumb-item.active {
+  color: #495057;
+  text-decoration: none;
+}
+.breadcrumb-wolf .breadcrumb-item a:hover {
+  color: var(--ws-accent);
+}

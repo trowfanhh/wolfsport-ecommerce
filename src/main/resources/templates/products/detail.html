@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${product.productName})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-wolf">
+            <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/products}">Sản phẩm</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/products(categoryId=${product.category.categoryId})}" th:text="${product.category.categoryName}">Danh mục</a></li>
+            <li class="breadcrumb-item active" th:text="${product.productName}">Tên</li>
+        </ol>
+    </nav>
+
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <img class="product-img rounded"
+                         th:src="${product.imageSrc}"
+                         th:alt="${product.productName}"
+                         onerror="this.onerror=null;this.src='/images/no-image.svg'">
+                </div>
+                <div class="col-md-7">
+                    <div class="text-secondary small mb-1 text-uppercase" th:text="${product.category.categoryName}">Danh mục</div>
+                    <h2 class="fw-bold title-case" th:text="${product.productName}">Tên sản phẩm</h2>
+                    <div class="price display-6 my-3"><span th:replace="~{fragments/layout :: price(${product.price})}"></span></div>
+
+                    <p class="mb-3">
+                        <span th:if="${product.stockQuantity > 0}" class="badge text-bg-success">Còn hàng</span>
+                        <span th:if="${product.stockQuantity > 0}" class="text-secondary ms-2 small"><span th:text="${product.stockQuantity}">0</span> sản phẩm có sẵn</span>
+                        <span th:if="${product.stockQuantity <= 0}" class="badge text-bg-secondary">Hết hàng</span>
+                    </p>
+
+                    <form th:if="${product.stockQuantity > 0}" th:action="@{/cart/add}" method="post" class="row g-2 align-items-center mb-4">
+                        <input type="hidden" name="productId" th:value="${product.productId}">
+                        <div class="col-auto">
+                            <input type="number" name="quantity" value="1" min="1" th:max="${product.stockQuantity}"
+                                   class="form-control" style="width: 100px;">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-accent btn-lg"><i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng</button>
+                        </div>
+                    </form>
+                    <p th:if="${currentUser == null and product.stockQuantity > 0}" class="small text-secondary">
+                        <i class="bi bi-info-circle"></i> Bạn cần <a th:href="@{/login}">đăng nhập</a> để thêm sản phẩm vào giỏ hàng.
+                    </p>
+
+                    <h6 class="fw-bold mt-4">Mô tả sản phẩm</h6>
+                    <p style="white-space: pre-line;" th:text="${#strings.isEmpty(product.description)} ? 'Chưa có mô tả.' : ${product.description}">Mô tả</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-5" th:if="${!related.isEmpty()}">
+        <h5 class="fw-bold mb-3">Sản phẩm liên quan</h5>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+            <th:block th:each="p : ${related}">
+                <div th:replace="~{fragments/product-card :: card(${p})}"></div>
+            </th:block>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

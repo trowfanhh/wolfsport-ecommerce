@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ========== HEAD ========== -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | WolfSport'">WolfSport</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- ========== NAVBAR KHÁCH HÀNG ========== -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark navbar-wolf sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-lightning-charge-fill text-accent"></i> Wolf<span>Sport</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <!-- <li class="nav-item"><a class="nav-link" th:href="@{/}">Trang chủ</a></li> -->
+                <!-- <li class="nav-item"><a class="nav-link" th:href="@{/products}">Sản phẩm</a></li> -->
+                 <!-- <li class="nav-item dropdown" th:if="${navCategories != null and !navCategories.isEmpty()}">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sản phẩm</a>
+    <ul class="dropdown-menu">
+        <li th:each="c : ${navCategories}">
+            <a class="dropdown-item text-uppercase"
+               th:classappend="${categoryId != null and categoryId == c.categoryId} ? 'active'"
+               th:href="@{/products(categoryId=${c.categoryId})}" th:text="${c.categoryName}">Danh mục</a>
+        </li> -->
+    </ul>
+</li>
+            </ul>
+            <form class="d-flex me-lg-3 my-2 my-lg-0" th:action="@{/products}" method="get">
+                <input class="form-control form-control-sm me-2" type="search" name="keyword" placeholder="Tìm sản phẩm..."
+                       th:value="${keyword}">
+                <button class="btn btn-sm btn-accent" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+            <ul class="navbar-nav align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link position-relative" th:href="@{/cart}">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        <span th:if="${cartCount > 0}" class="badge rounded-pill bg-danger ms-1" th:text="${cartCount}">0</span>
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${currentUser == null}">
+                    <a class="nav-link" th:href="@{/login}"><i class="bi bi-person-circle"></i> Đăng nhập</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser == null}">
+                    <a class="nav-link" th:href="@{/register}"><i class="bi bi-person-plus"></i> Đăng ký</a>
+                </li>
+                <li class="nav-item dropdown" th:if="${currentUser != null}">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> <span th:text="${currentUser.fullName}">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li th:if="${currentUser.admin}"><a class="dropdown-item" th:href="@{/admin/products}"><i class="bi bi-speedometer2"></i> Trang quản trị</a></li>
+                        <li th:if="${currentUser.admin}"><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="px-3">
+                                <button type="submit" class="btn btn-link text-decoration-none p-0 text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== NAVBAR ADMIN ========== -->
+<nav th:fragment="adminNav(active)" class="navbar navbar-expand-lg navbar-dark navbar-wolf sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/admin/products}"><i class="bi bi-shield-lock-fill text-accent"></i> Wolf<span>Sport</span> Admin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:classappend="${active == 'products'} ? 'active fw-semibold'" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i> Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${active == 'categories'} ? 'active fw-semibold'" th:href="@{/admin/categories}"><i class="bi bi-tags"></i> Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Xem website</a></li>
+            </ul>
+            <span class="navbar-text me-3" th:if="${currentUser != null}" th:text="${currentUser.fullName}">Admin</span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-sm btn-outline-light"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== THÔNG BÁO (flash) ========== -->
+<div th:fragment="flash">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<!-- ========== ĐỊNH DẠNG GIÁ: 1.250.000 ₫ ========== -->
+<span th:fragment="price(value)" th:text="${#numbers.formatDecimal(value, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</span>
+
+<!-- ========== FOOTER ========== -->
+<footer th:fragment="footer" class="bg-dark text-light-emphasis py-4 mt-5">
+    <div class="container text-center small text-secondary">
+        &copy; WolfSport – Cửa hàng dụng cụ thể thao. Đồ án Spring Boot.
+    </div>
+</footer>
+
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+</body>
+</html>

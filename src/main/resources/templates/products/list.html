@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/layout :: head('Sản phẩm')}"></head>
+  <body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <main class="container py-4">
+      <div th:replace="~{fragments/layout :: flash}"></div>
+      <div class="row g-4">
+        <!-- Bộ lọc danh mục -->
+        <aside class="col-lg-3">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">Danh mục</div>
+            <div class="list-group list-group-flush">
+              <!-- <a th:href="@{/products(keyword=${keyword})}" class="list-group-item list-group-item-action"
+                       th:classappend="${categoryId == null} ? 'active'">Tất cả sản phẩm</a> -->
+              <a
+                th:href="@{/products(keyword=${keyword})}"
+                class="list-group-item list-group-item-action text-uppercase"
+                th:classappend="${categoryId == null} ? 'active'"
+                >Tất cả sản phẩm</a
+              >
+              <a
+                th:each="c : ${categories}"
+                th:href="@{/products(keyword=${keyword}, categoryId=${c.categoryId})}"
+                class="list-group-item list-group-item-action text-uppercase"
+                th:classappend="${categoryId != null and categoryId == c.categoryId} ? 'active'"
+                th:text="${c.categoryName}"
+                >Danh mục</a
+              >
+            </div>
+          </div>
+        </aside>
+
+        <!-- Danh sách -->
+        <section class="col-lg-9">
+          <form class="row g-2 mb-3" th:action="@{/products}" method="get">
+            <input type="hidden" name="categoryId" th:value="${categoryId}" />
+            <div class="col">
+              <input
+                type="search"
+                name="keyword"
+                class="form-control"
+                placeholder="Nhập tên sản phẩm cần tìm..."
+                th:value="${keyword}"
+              />
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-accent" type="submit">
+                <i class="bi bi-search"></i> Tìm kiếm
+              </button>
+            </div>
+          </form>
+
+          <p class="text-secondary small">
+            Tìm thấy <strong th:text="${page.totalElements}">0</strong> sản phẩm
+            <span th:if="${!#strings.isEmpty(keyword)}"
+              >cho từ khóa "<strong th:text="${keyword}"></strong>"</span
+            >
+          </p>
+
+          <div th:if="${products.isEmpty()}" class="alert alert-info">
+            Không tìm thấy sản phẩm phù hợp.
+          </div>
+
+          <div class="row row-cols-2 row-cols-md-3 g-3">
+            <th:block th:each="p : ${products}">
+              <div th:replace="~{fragments/product-card :: card(${p})}"></div>
+            </th:block>
+          </div>
+
+          <!-- Phân trang -->
+          <nav th:if="${page.totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <a
+                  class="page-link"
+                  th:href="@{/products(page=${page.number - 1}, keyword=${keyword}, categoryId=${categoryId})}"
+                  >&laquo;</a
+                >
+              </li>
+              <li
+                class="page-item"
+                th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                th:classappend="${i == page.number} ? 'active'"
+              >
+                <a
+                  class="page-link"
+                  th:href="@{/products(page=${i}, keyword=${keyword}, categoryId=${categoryId})}"
+                  th:text="${i + 1}"
+                  >1</a
+                >
+              </li>
+              <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <a
+                  class="page-link"
+                  th:href="@{/products(page=${page.number + 1}, keyword=${keyword}, categoryId=${categoryId})}"
+                  >&raquo;</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+  </body>
+</html>
