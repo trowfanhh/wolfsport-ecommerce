@@ -58,6 +58,8 @@
                         <i class="bi bi-person-circle"></i> <span th:text="${currentUser.fullName}">User</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/orders}"><i class="bi bi-receipt"></i> Đơn hàng của tôi</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li th:if="${currentUser.admin}"><a class="dropdown-item" th:href="@{/admin/products}"><i class="bi bi-speedometer2"></i> Trang quản trị</a></li>
                         <li th:if="${currentUser.admin}"><hr class="dropdown-divider"></li>
                         <li>
@@ -83,6 +85,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" th:classappend="${active == 'products'} ? 'active fw-semibold'" th:href="@{/admin/products}"><i class="bi bi-box-seam"></i> Sản phẩm</a></li>
                 <li class="nav-item"><a class="nav-link" th:classappend="${active == 'categories'} ? 'active fw-semibold'" th:href="@{/admin/categories}"><i class="bi bi-tags"></i> Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${active == 'orders'} ? 'active fw-semibold'" th:href="@{/admin/orders}"><i class="bi bi-receipt"></i> Đơn hàng</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Xem website</a></li>
             </ul>
             <span class="navbar-text me-3" th:if="${currentUser != null}" th:text="${currentUser.fullName}">Admin</span>

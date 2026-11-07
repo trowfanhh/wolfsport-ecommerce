@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Đặt hàng')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container py-4">
+    <h3 class="fw-bold mb-3"><i class="bi bi-bag-check"></i> Đặt hàng</h3>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="row g-4">
+        <!-- Thông tin giao hàng -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Thông tin giao hàng</h5>
+                    <form th:action="@{/orders/checkout}" th:object="${checkoutForm}" method="post" novalidate>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="receiverName">Tên người nhận <span class="text-danger">*</span></label>
+                            <input type="text" id="receiverName" class="form-control" th:field="*{receiverName}" th:errorclass="is-invalid">
+                            <div class="invalid-feedback" th:errors="*{receiverName}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="receiverPhone">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="text" id="receiverPhone" class="form-control" th:field="*{receiverPhone}" th:errorclass="is-invalid">
+                            <div class="invalid-feedback" th:errors="*{receiverPhone}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="shippingAddress">Địa chỉ giao hàng <span class="text-danger">*</span></label>
+                            <input type="text" id="shippingAddress" class="form-control" th:field="*{shippingAddress}" th:errorclass="is-invalid">
+                            <div class="invalid-feedback" th:errors="*{shippingAddress}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="note">Ghi chú</label>
+                            <textarea id="note" rows="3" class="form-control" th:field="*{note}" th:errorclass="is-invalid"></textarea>
+                            <div class="invalid-feedback" th:errors="*{note}"></div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/cart}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay lại giỏ hàng</a>
+                            <button type="submit" class="btn btn-accent flex-grow-1"><i class="bi bi-check2-circle"></i> Xác nhận đặt hàng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tóm tắt đơn -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Đơn hàng của bạn</h5>
+                    <div th:each="item : ${cart.items}" class="d-flex justify-content-between mb-2">
+                        <span>
+                            <span class="title-case" th:text="${item.product.productName}">Tên</span>
+                            <span class="text-secondary">x <span th:text="${item.quantity}">1</span></span>
+                        </span>
+                        <span class="text-nowrap ms-3"><span th:replace="~{fragments/layout :: price(${item.subtotal})}"></span></span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5 fw-bold">
+                        <span>Tổng tiền</span>
+                        <span class="price"><span th:replace="~{fragments/layout :: price(${cart.total})}"></span></span>
+                    </div>
+                    <p class="small text-secondary mt-3 mb-0">Thanh toán khi nhận hàng (COD).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
